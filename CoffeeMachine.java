@@ -2,6 +2,11 @@ package jb_coffee_machine;
 
 import java.util.Scanner;
 
+/**
+ *  Coffee machine simulator.
+ *  The machine works with typical products: coffee, milk, sugar, and plastic cups;
+ *  if it runs out of something, it shows a notification.
+ */
 public class CoffeeMachine {
     private int water;
     private int milk;
@@ -10,18 +15,24 @@ public class CoffeeMachine {
     private int money;
     private boolean switchOn = true;
 
-    public static void main(String[] args) {
-        new CoffeeMachine().run();
+    /**
+     * @param water
+     * @param milk
+     * @param coffeeBeans
+     * @param disposableCups
+     * @param money
+     */
+    public CoffeeMachine(int water, int milk, int coffeeBeans, int disposableCups, int money) {
+        this.water = water;
+        this.milk = milk;
+        this.coffeeBeans = coffeeBeans;
+        this.disposableCups = disposableCups;
+        this.money = money;
     }
 
-    public CoffeeMachine() {
-        water = 400;
-        milk = 540;
-        coffeeBeans = 120;
-        disposableCups = 9;
-        money = 550;
-    }
-
+    /**
+     * Run coffee machine
+     */
     public void run() {
         while (switchOn) {
             switch (action()) {
@@ -47,13 +58,22 @@ public class CoffeeMachine {
         }
     }
 
+    /**
+     * Actions available to the customer
+     * @return Action selected by customer
+     */
     private Action action() {
         System.out.print("Write action (buy, fill, take, remaining, exit):\n> ");
         final String customChoice = customInput().toUpperCase();
-        return isValidCustomActionChoice(customChoice) ? Action.valueOf(customChoice) : Action.UNKNOWN;
+        return isCustomActionChoiceValid(customChoice) ? Action.valueOf(customChoice) : Action.UNKNOWN;
     }
 
-    private boolean isValidCustomActionChoice(String choice) {
+    /**
+     * Validating a custom action choice
+     * @param choice custom action choice
+     * @return true, if a choice is valid, else false
+     */
+    private boolean isCustomActionChoiceValid(String choice) {
         boolean isValidChoice = false;
         for (Action aciton : Action.values()) {
             if (choice.equals(aciton.name())) {
@@ -64,6 +84,9 @@ public class CoffeeMachine {
         return isValidChoice;
     }
 
+    /**
+     * Buying coffee
+     */
     private void buy() {
         System.out.println();
         System.out.print("What do you want to buy? 1 - espresso, 2 - latte, 3 - cappuccino, back - to main menu:\n> ");
@@ -88,30 +111,47 @@ public class CoffeeMachine {
         }
     }
 
+    /**
+     * Buying Espresso
+     */
     private void buyEspresso() {
         if (makeCoffee(Coffee.ESPRESSO)) {
             money += Coffee.ESPRESSO.cost;
         }
     }
 
+    /**
+     * Buying Latte
+     */
     private void buyLatte() {
         if (makeCoffee(Coffee.LATTE)) {
             money += Coffee.LATTE.cost;
         }
     }
 
+    /**
+     * Buying Cappuccino
+     */
     private void buyCappuccino() {
         if (makeCoffee(Coffee.CAPPUCCINO)) {
             money += Coffee.CAPPUCCINO.cost;
         }
     }
 
+    /**
+     * Buying unknown coffee
+     */
     private void buyUnknownCoffee() {
         System.out.println();
         System.out.println("I can't make coffee");
         System.out.println();
     }
 
+    /**
+     * Making coffee
+     * @param coffee kind of coffee
+     * @return true, if coffee has made, else false
+     */
     private boolean makeCoffee(Coffee coffee) {
         boolean done = false;
         if (haveEnoughIngredients(coffee)) {
@@ -128,10 +168,18 @@ public class CoffeeMachine {
         return done;
     }
 
+    /**
+     * Checking if there are enough ingredients
+     * @param coffee kind of coffee
+     * @return true, if ingredients is enough, else false
+     */
     private boolean haveEnoughIngredients(Coffee coffee) {
         return water >= coffee.water && milk >= coffee.milk && coffeeBeans >= coffee.coffeeBeans && disposableCups >= coffee.disposableCups;
     }
 
+    /**
+     * Filling coffee machine
+     */
     private void fill() {
         System.out.println();
         System.out.print("Write how many ml of water do you want to add:\n> ");
@@ -145,6 +193,9 @@ public class CoffeeMachine {
         System.out.println();
     }
 
+    /**
+     * Taking money
+     */
     private void take() {
         System.out.println();
         System.out.println("I gave you $" + money);
@@ -152,6 +203,9 @@ public class CoffeeMachine {
         money = 0;
     }
 
+    /**
+     * Displaying residue
+     */
     private void residue() {
         System.out.println();
         System.out.println("The coffee machine has:");
@@ -163,39 +217,25 @@ public class CoffeeMachine {
         System.out.println();
     }
 
+    /**
+     * Unknown action
+     */
     private void unknownAction() {
         System.out.println();
     }
 
+    /**
+     * Custon input
+     * @return the string entered by the user
+     */
     private String customInput() {
         return new Scanner(System.in).nextLine().trim();
     }
 
+    /**
+     * Switch off coffee machine
+     */
     private void exit() {
         switchOn = false;
     }
 }
-
-//enum Action {
-//    BUY, FILL, TAKE, REMAINING, EXIT, UNKNOWN
-//}
-
-//enum Coffee {
-//    ESPRESSO(250, 0, 16, 1, 4),
-//    LATTE(350, 75, 20, 1, 7),
-//    CAPPUCCINO(200, 100, 12, 1, 6);
-//
-//    final int water;
-//    final int milk;
-//    final int coffeeBeans;
-//    final int disposableCups;
-//    final int cost;
-//
-//    Coffee(int water, int milk, int coffeeBeans, int disposableCups, int cost) {
-//        this.water = water;
-//        this.milk = milk;
-//        this.coffeeBeans = coffeeBeans;
-//        this.disposableCups = disposableCups;
-//        this.cost = cost;
-//    }
-//}
